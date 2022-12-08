@@ -1,7 +1,12 @@
 import process from 'process';
 
+import { displayWorkDir } from './utils.mjs';
+
 const userName = process.argv[2];
-console.log(`Welcome to the File Manager, ${userName}!`)
+
+console.log(`Welcome to the File Manager, ${userName}!`);
+displayWorkDir();
+
 process.stdin.on('data', data => {
     let command = data.toString().trim();
     console.log(command === '.exit')
@@ -10,7 +15,7 @@ process.stdin.on('data', data => {
             console.log(`Thank you for using File Manager, ${userName}, goodbye!`);
             process.stdin.pause()
         default:
-            console.log('Unkmnown command')
+            console.log('Invalid input')
     }
 })
 
@@ -19,3 +24,6 @@ process.on('SIGINT', () => {
     process.stdin.pause();
 })
 
+process.on('error', ()=>{
+    console.log('Operation failed')
+})
