@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "echo \"Welcome to the File Manager,$npm_config_username !\" && node filemanager.mjs"
+    "start": "node filemanager.mjs $npm_config_username"
   },
   "keywords": [],
   "author": "",
