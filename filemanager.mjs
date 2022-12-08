@@ -113,9 +113,9 @@ process.stdin.on('data', data => {
                 }
                 else {
                     fs.createWriteStream(`${curUserDir}/${commandLine[1]}`, (err) => {
-                        if ( err ) throw new Error('Creation file error')
-                        console.log(`File ${commandLine[1]} created` ) 
-                     })
+                        if (err) throw new Error('Creation file error')
+                        console.log(`File ${commandLine[1]} created`)
+                    })
                 }
             }
             break;
@@ -126,13 +126,30 @@ process.stdin.on('data', data => {
                     console.log('Error: file dont exist')
                 }
                 else {
-                    fs.unlink(`${curUserDir}/${commandLine[1]}`, (err) => { 
-                        if ( err ) throw new Error('Delete file error')
+                    fs.unlink(`${curUserDir}/${commandLine[1]}`, (err) => {
+                        if (err) throw new Error('Delete file error')
                         console.log(`File ${commandLine[1]} deleted successfully`)
                     })
                 }
             }
             break;
+        case 'rn':
+            if (!commandLine[1] || !commandLine[2]) {
+                console.log('command pattern is rn path_to_file new_filename')
+            }
+            else {
+                if (!fs.existsSync(`${curUserDir}/${commandLine[1]}`)) {
+                    console.log('Error: file not exits')
+                }
+                else {
+                    fs.renameSync(`${curUserDir}/${commandLine[1]}`, `${curUserDir}/${commandLine[2]}`, (err) => {
+                        if (err) { console.log('Rename file error') }
+                        else {
+                            console.log(`File ${curUserDir}/${commandLine[1]} successfully rename to ${curUserDir}/${commandLine[2]}`)
+                        }
+                    })
+                }
+            }
         //DEFAULT        
         default:
             console.log('Invalid input');
