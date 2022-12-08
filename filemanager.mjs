@@ -1,4 +1,5 @@
-import process from 'process';
+import process, { chdir } from 'process';
+console.log('cs')
 import os from 'os';
 import * as fs from 'fs';
 
@@ -7,34 +8,59 @@ import { clear } from 'console';
 
 const userName = process.argv[2];
 let curUserDir = os.homedir();
+process.chdir(curUserDir);
 
 console.log(`Welcome to the File Manager, ${userName}!`);
 displayWorkDir(curUserDir);
 
 process.stdin.on('data', data => {
-    let command = data.toString().trim();
+    let commandLine = data.toString().trim().split(' ');
+    let command = commandLine[0];
+
     switch (command) {
         case '.exit':
             console.log(`Thank you for using File Manager, ${userName}, goodbye!`);
             process.stdin.pause();
             break;
         // OS Section
-        case 'os --homedir':
-            console.log(os.homedir())
+        case 'os':
+            switch (commandLine[1]) {
+                case '--homedir':
+                    console.log(os.homedir())
+                    break;
+                case '--username':
+                    console.log(os.userInfo().username);
+                    break;
+                case '--cpus':
+                    console.log(os.cpus());
+                    break;
+                case '--architecture':
+                    console.log(os.arch());
+                    break;
+                case '--EOL':
+                    console.log(os.EOL);
+                    break;
+                default:
+                    console.log('Invalid input');
+            };
             break;
-        case 'os --username':
-            console.log(os.userInfo().username);
-            break;
-        case 'os --cpus':
-            console.log(os.cpus());
-            break;
-        case 'os --architecture':
-            console.log(os.arch());
-            break;
-        case 'os --EOL':
-            console.log(os.EOL);
-            break;
-        //FS Section
+
+        //FS Section  
+        case 'cd':
+            if ( !commandLine[1]) {
+                console.log('Invalid input (command need path)')
+            } 
+            else {
+                let newPath = `${curUserDir}/${commandLine[1]}`;
+                if ( !fs.existsSync( newPath )) {
+                    console.log('Target path dont exists')
+                }
+                else {
+                    curUserDir = `${curUserDir}/${commandLine[1]}`;
+                    console.log(`You are currently in ${curUserDir}`)
+                }
+            }
+            break;     
         case 'ls':
             let dirs = fs.readdirSync(curUserDir);
             let dispDirs = [];
@@ -42,7 +68,7 @@ process.stdin.on('data', data => {
                 let isDirectory = fs.lstatSync(`${curUserDir}/${obj}`).isDirectory();
                 dispDirs.push({
                     "name": obj,
-                    "type": isDirectory ? 'file' : 'directory'
+                    "type": isDirectory ?   'directory' :'file'
                 });
             })
 
@@ -57,9 +83,11 @@ process.stdin.on('data', data => {
                 })
             );
             break;
+        //DEFAULT
         default:
-            console.log('Invalid input')
-    }
+            console.log('Invalid input');
+
+    };
 })
 
 process.on('SIGINT', () => {
