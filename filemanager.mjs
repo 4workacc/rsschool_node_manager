@@ -3,7 +3,7 @@ console.log('cs')
 import os from 'os';
 import * as fs from 'fs';
 
-import { displayWorkDir } from './utils.mjs';
+import { displayWorkDir, readFile } from './utils.mjs';
 import { clear } from 'console';
 
 const userName = process.argv[2];
@@ -95,7 +95,16 @@ process.stdin.on('data', data => {
                 })
             );
             break;
-        //DEFAULT
+        //FILES section
+        case 'cat':
+            if ( !commandLine[1] ) { console.log('Error: file should be named')}
+            else {
+                if ( !fs.existsSync(`${curUserDir}/${commandLine[1]}`)) { console.log('Error: file dont exist')}
+                else {
+                    readFile(`${curUserDir}/${commandLine[1]}`)
+                }
+             }
+        //DEFAULT        
         default:
             console.log('Invalid input');
 
