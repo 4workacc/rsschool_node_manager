@@ -47,12 +47,12 @@ process.stdin.on('data', data => {
 
         //FS Section  
         case 'cd':
-            if ( !commandLine[1]) {
+            if (!commandLine[1]) {
                 console.log('Invalid input (command need path)')
-            } 
+            }
             else {
                 let newPath = `${curUserDir}/${commandLine[1]}`;
-                if ( !fs.existsSync( newPath )) {
+                if (!fs.existsSync(newPath)) {
                     console.log('Target path dont exists')
                 }
                 else {
@@ -60,15 +60,15 @@ process.stdin.on('data', data => {
                     console.log(`You are currently in ${curUserDir}`)
                 }
             }
-            break;     
+            break;
         case 'up':
             console.debug(curUserDir)
-            if ( curUserDir === 'C:' || curUserDir === '/home') {
+            if (curUserDir === 'C:' || curUserDir === '/home') {
                 console.log('Error: could not move higher');
             }
-            else {                
-                curUserDir = curUserDir.split('/');             
-                curUserDir.pop();            
+            else {
+                curUserDir = curUserDir.split('/');
+                curUserDir.pop();
                 curUserDir = curUserDir.join('/');
                 console.log(`You are currently in ${curUserDir}`)
             }
@@ -80,7 +80,7 @@ process.stdin.on('data', data => {
                 let isDirectory = fs.lstatSync(`${curUserDir}/${obj}`).isDirectory();
                 dispDirs.push({
                     "name": obj,
-                    "type": isDirectory ?   'directory' :'file'
+                    "type": isDirectory ? 'directory' : 'file'
                 });
             })
 
@@ -97,13 +97,25 @@ process.stdin.on('data', data => {
             break;
         //FILES section
         case 'cat':
-            if ( !commandLine[1] ) { console.log('Error: file should be named')}
+            if (!commandLine[1]) { console.log('Error: file should be named') }
             else {
-                if ( !fs.existsSync(`${curUserDir}/${commandLine[1]}`)) { console.log('Error: file dont exist')}
+                if (!fs.existsSync(`${curUserDir}/${commandLine[1]}`)) { console.log('Error: file dont exist') }
                 else {
                     readFile(`${curUserDir}/${commandLine[1]}`)
                 }
-             }
+            };
+            break;
+        case 'add':
+            if (!commandLine[1]) { console.log('Error: file should be named') }
+            else {
+                if ( fs.existsSync(`${curUserDir}/${commandLine[1]}`)) {
+                    console.log('Error: file already exist')
+                }
+                else {
+                    fs.createWriteStream(`${curUserDir}/${commandLine[1]}`,()=>{})
+                }
+            }
+            break;
         //DEFAULT        
         default:
             console.log('Invalid input');
