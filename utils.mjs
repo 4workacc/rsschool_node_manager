@@ -1,6 +1,3 @@
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-
-export const displayWorkDir = () => {
-    console.log(`You are currently in ${dirname(fileURLToPath(import.meta.url))}`)
+export const displayWorkDir = ( curDir ) => {
+    console.log(`You are currently in ${curDir}`)
 }
