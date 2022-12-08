@@ -61,6 +61,18 @@ process.stdin.on('data', data => {
                 }
             }
             break;     
+        case 'up':
+            console.debug(curUserDir)
+            if ( curUserDir === 'C:' || curUserDir === '/home') {
+                console.log('Error: could not move higher');
+            }
+            else {                
+                curUserDir = curUserDir.split('/');             
+                curUserDir.pop();            
+                curUserDir = curUserDir.join('/');
+                console.log(`You are currently in ${curUserDir}`)
+            }
+            break;
         case 'ls':
             let dirs = fs.readdirSync(curUserDir);
             let dispDirs = [];
