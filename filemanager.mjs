@@ -108,11 +108,28 @@ process.stdin.on('data', data => {
         case 'add':
             if (!commandLine[1]) { console.log('Error: file should be named') }
             else {
-                if ( fs.existsSync(`${curUserDir}/${commandLine[1]}`)) {
+                if (fs.existsSync(`${curUserDir}/${commandLine[1]}`)) {
                     console.log('Error: file already exist')
                 }
                 else {
-                    fs.createWriteStream(`${curUserDir}/${commandLine[1]}`,()=>{})
+                    fs.createWriteStream(`${curUserDir}/${commandLine[1]}`, (err) => {
+                        if ( err ) throw new Error('Creation file error')
+                        console.log(`File ${commandLine[1]} created` ) 
+                     })
+                }
+            }
+            break;
+        case 'delete':
+            if (!commandLine[1]) { console.log('Error: file should be named') }
+            else {
+                if (!fs.existsSync(`${curUserDir}/${commandLine[1]}`)) {
+                    console.log('Error: file dont exist')
+                }
+                else {
+                    fs.unlink(`${curUserDir}/${commandLine[1]}`, (err) => { 
+                        if ( err ) throw new Error('Delete file error')
+                        console.log(`File ${commandLine[1]} deleted successfully`)
+                    })
                 }
             }
             break;
