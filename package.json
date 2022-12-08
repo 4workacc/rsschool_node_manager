@@ -1,0 +1,13 @@
+{
+  "name": "rsschool_node__filemanager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "echo \"Welcome to the File Manager,$npm_config_username !\" && node filemanager.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
