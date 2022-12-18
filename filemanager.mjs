@@ -2,7 +2,7 @@ import process, { chdir } from 'process';
 import os from 'os';
 import * as fs from 'fs';
 import * as crypto from 'crypto';
-import { displayWorkDir, readFile } from './utils.mjs';
+import { compressFile, decompressFile, displayWorkDir, readFile } from './utils.mjs';
 import { clear } from 'console';
 
 const userName = process.argv[2];
@@ -205,9 +205,36 @@ process.stdin.on('data', data => {
                     let hash = crypto.createHash('sha256');
                     let data = hash.update(textData, 'utf-8');
                     let gen_hash = data.digest('hex');
-                    console.log( gen_hash )
+                    console.log(gen_hash)
                 }
             };
+            break;
+        //COMPRESS SECTION
+        case 'compress':
+            if (!commandLine[1] || !commandLine[2]) {
+                console.log('Error: command pattern is compress path_to_file path_to_destination')
+            }
+            else {
+                if (!fs.isFileExist(`${curUserDir}\\${commandLine[1]}`) || fs.isFileExist(`${curUserDir}\\${commandLine[2]}`)) {
+                    console.log('Error: initial file not exist or target file already exits')
+                }
+                else {
+                    compressFile(`${curUserDir}\\${commandLine[1]}`), fs.isFileExist(`${curUserDir}\\${commandLine[2]}`)
+                }
+            }
+            break;
+        case 'decompress':
+            if (!commandLine[1] || !commandLine[2]) {
+                console.log('Error: command pattern is compress path_to_file path_to_destination')
+            }
+            else {
+                if (!fs.isFileExist(`${curUserDir}\\${commandLine[1]}`) || fs.isFileExist(`${curUserDir}\\${commandLine[2]}`)) {
+                    console.log('Error: initial file not exist or target file already exits')
+                }
+                else {
+                    decompressFile(`${curUserDir}\\${commandLine[1]}`), fs.isFileExist(`${curUserDir}\\${commandLine[2]}`)
+                }
+            }
             break;
         //DEFAULT        
         default:
