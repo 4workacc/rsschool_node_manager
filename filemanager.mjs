@@ -51,25 +51,24 @@ process.stdin.on('data', data => {
                 console.log('Invalid input (command need path)')
             }
             else {
-                let newPath = `${curUserDir}/${commandLine[1]}`;
+                let newPath = `${curUserDir}\\${commandLine[1]}`;
                 if (!fs.existsSync(newPath)) {
                     console.log('Target path dont exists')
                 }
                 else {
-                    curUserDir = `${curUserDir}/${commandLine[1]}`;
+                    curUserDir = newPath;
                     console.log(`You are currently in ${curUserDir}`)
                 }
             }
             break;
         case 'up':
-            console.debug(curUserDir)
-            if (curUserDir === 'C:' || curUserDir === '/home') {
+            if (curUserDir === os.homedir()) {
                 console.log('Error: could not move higher');
             }
             else {
-                curUserDir = curUserDir.split('/');
+                curUserDir = curUserDir.split('\\');
                 curUserDir.pop();
-                curUserDir = curUserDir.join('/');
+                curUserDir = curUserDir.join('\\');
                 console.log(`You are currently in ${curUserDir}`)
             }
             break;
@@ -83,9 +82,7 @@ process.stdin.on('data', data => {
                     "type": isDirectory ? 'directory' : 'file'
                 });
             })
-
             dispDirs.sort((a, b) => (a.type > b.type) ? 1 : -1)
-
             console.table(
                 dispDirs.map(obj => {
                     return {
@@ -119,7 +116,7 @@ process.stdin.on('data', data => {
                 }
             }
             break;
-        case 'delete':
+        case 'rm':
             if (!commandLine[1]) { console.log('Error: file should be named') }
             else {
                 if (!fs.existsSync(`${curUserDir}/${commandLine[1]}`)) {
@@ -138,22 +135,46 @@ process.stdin.on('data', data => {
                 console.log('command pattern is rn path_to_file new_filename')
             }
             else {
-                if (!fs.existsSync(`${curUserDir}/${commandLine[1]}`)) {
-                    console.log('Error: file not exits')
+                if (!fs.existsSync(`${curUserDir}\\${commandLine[1]}`) || fs.existsSync(`${curUserDir}\\${commandLine[2]}`)) {
+                    console.log('Error: file not exits or rename file already exist')
                 }
                 else {
-                    fs.renameSync(`${curUserDir}/${commandLine[1]}`, `${curUserDir}/${commandLine[2]}`, (err) => {
-                        if (err) { console.log('Rename file error') }
-                        else {
-                            console.log(`File ${curUserDir}/${commandLine[1]} successfully rename to ${curUserDir}/${commandLine[2]}`)
+                    let isErr = false;
+                    fs.renameSync(`${curUserDir}\\${commandLine[1]}`, `${curUserDir}\\${commandLine[2]}`, (err) => {
+                        if (err) {
+                            isErr = true;
                         }
-                    })
+                    });
+                    isErr ? console.log('Rename error') : console.log(`File ${curUserDir}\\${commandLine[1]} successfully rename to ${curUserDir}\\${commandLine[2]}`)
+                }
+            };
+            break;
+        case 'cp':
+            if (!commandLine[1] || !commandLine[2]) {
+                console.log('Error: command pattern is cp path_to_file path_to_new_directory')
+            }
+            else {
+                let isFileExist = fs.existsSync(`${curUserDir}\\${commandLine[1]}`);
+                let isDirExist = true;
+                try {                   
+                    fs.lstatSync(`${curUserDir}\\${commandLine[2]}`).isDirectory();                    
+                } catch (err) {
+                    isDirExist = false;
+                }                    
+                if (!isFileExist || !isDirExist) {
+                    console.log(`Error: file dont exist or target folder dont exist`);
+                }
+                else {
+                    let rSteam = fs.createReadStream(`${curUserDir}\\${commandLine[1]}`);
+                    let wStream = fs.createWriteStream(`${curUserDir}\\${commandLine[2]}\\${commandLine[1]}`);
+                    rSteam.pipe(wStream);
+                    console.log(`File ${commandLine[1]} copyed to folder ${commandLine[2]}`)
                 }
             }
+            break;
         //DEFAULT        
         default:
             console.log('Invalid input');
-
     };
 })
 

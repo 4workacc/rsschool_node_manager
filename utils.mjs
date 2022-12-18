@@ -9,3 +9,11 @@ export const readFile = (filePath) => {
         console.log(data.toString())
     })
 }
+
+export const compressFile = (filePath, gzipPath) => {
+
+}
+
+export const decompressFile = (gzipFile, filePath) => {
+    
+}
