@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as crypto from 'crypto';
 import { compressFile, decompressFile, displayWorkDir, readFile } from './utils.mjs';
 
-const userName = process.argv[2];
+const userName = process.platform === 'win32' ? process.argv[3] : process.argv[2];
 let curUserDir = os.homedir();
 process.chdir(curUserDir);
 
