@@ -172,6 +172,30 @@ process.stdin.on('data', data => {
                 }
             }
             break;
+        case 'mv' :
+            if (!commandLine[1] || !commandLine[2]) {
+                console.log('Error: command pattern is mv path_to_file path_to_new_directory')
+            }
+            else {
+                let isFileExist = fs.existsSync(`${curUserDir}\\${commandLine[1]}`);
+                let isDirExist = true;
+                try {                   
+                    fs.lstatSync(`${curUserDir}\\${commandLine[2]}`).isDirectory();                    
+                } catch (err) {
+                    isDirExist = false;
+                }                    
+                if (!isFileExist || !isDirExist) {
+                    console.log(`Error: file dont exist or target folder dont exist`);
+                }
+                else {
+                    let rSteam = fs.createReadStream(`${curUserDir}\\${commandLine[1]}`);
+                    let wStream = fs.createWriteStream(`${curUserDir}\\${commandLine[2]}\\${commandLine[1]}`);
+                    rSteam.pipe(wStream);
+                    fs.unlinkSync(`${curUserDir}\\${commandLine[1]}`);
+                    console.log(`File ${commandLine[1]} moved to folder ${commandLine[2]}`)
+                }
+            }
+            break;
         //DEFAULT        
         default:
             console.log('Invalid input');
