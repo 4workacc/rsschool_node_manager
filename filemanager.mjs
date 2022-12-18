@@ -3,7 +3,6 @@ import os from 'os';
 import * as fs from 'fs';
 import * as crypto from 'crypto';
 import { compressFile, decompressFile, displayWorkDir, readFile } from './utils.mjs';
-import { clear } from 'console';
 
 const userName = process.argv[2];
 let curUserDir = os.homedir();
@@ -25,7 +24,7 @@ process.stdin.on('data', data => {
         case 'os':
             switch (commandLine[1]) {
                 case '--homedir':
-                    console.log(os.homedir())
+                    console.log(os.homedir());
                     break;
                 case '--username':
                     console.log(os.userInfo().username);
@@ -42,6 +41,7 @@ process.stdin.on('data', data => {
                 default:
                     console.log('Invalid input');
             };
+            console.log(`You are currently in ${curUserDir}`)
             break;
 
         //FS Section  
@@ -58,7 +58,7 @@ process.stdin.on('data', data => {
                     curUserDir = newPath;
                     console.log(`You are currently in ${curUserDir}`)
                 }
-            }
+            };           
             break;
         case 'up':
             if (curUserDir === os.homedir()) {
@@ -90,6 +90,7 @@ process.stdin.on('data', data => {
                     }
                 })
             );
+            console.log(`You are currently in ${curUserDir}`)
             break;
         //FILES section
         case 'cat':
@@ -100,6 +101,7 @@ process.stdin.on('data', data => {
                     readFile(`${curUserDir}/${commandLine[1]}`)
                 }
             };
+            console.log(`You are currently in ${curUserDir}`)
             break;
         case 'add':
             if (!commandLine[1]) { console.log('Error: file should be named') }
@@ -114,6 +116,7 @@ process.stdin.on('data', data => {
                     })
                 }
             }
+            console.log(`You are currently in ${curUserDir}`)
             break;
         case 'rm':
             if (!commandLine[1]) { console.log('Error: file should be named') }
@@ -128,6 +131,7 @@ process.stdin.on('data', data => {
                     })
                 }
             }
+            console.log(`You are currently in ${curUserDir}`)
             break;
         case 'rn':
             if (!commandLine[1] || !commandLine[2]) {
@@ -147,6 +151,7 @@ process.stdin.on('data', data => {
                     isErr ? console.log('Rename error') : console.log(`File ${curUserDir}\\${commandLine[1]} successfully rename to ${curUserDir}\\${commandLine[2]}`)
                 }
             };
+            console.log(`You are currently in ${curUserDir}`)
             break;
         case 'cp':
             if (!commandLine[1] || !commandLine[2]) {
@@ -170,6 +175,7 @@ process.stdin.on('data', data => {
                     console.log(`File ${commandLine[1]} copyed to folder ${commandLine[2]}`)
                 }
             }
+            console.log(`You are currently in ${curUserDir}`)
             break;
         case 'mv':
             if (!commandLine[1] || !commandLine[2]) {
@@ -194,6 +200,7 @@ process.stdin.on('data', data => {
                     console.log(`File ${commandLine[1]} moved to folder ${commandLine[2]}`)
                 }
             }
+            console.log(`You are currently in ${curUserDir}`)
             break;
         //HASH 
         case 'hash':
@@ -208,6 +215,7 @@ process.stdin.on('data', data => {
                     console.log(gen_hash)
                 }
             };
+            console.log(`You are currently in ${curUserDir}`)
             break;
         //COMPRESS SECTION
         case 'compress':
@@ -215,26 +223,28 @@ process.stdin.on('data', data => {
                 console.log('Error: command pattern is compress path_to_file path_to_destination')
             }
             else {
-                if (!fs.isFileExist(`${curUserDir}\\${commandLine[1]}`) || fs.isFileExist(`${curUserDir}\\${commandLine[2]}`)) {
+                if (!fs.existsSync(`${curUserDir}\\${commandLine[1]}`) || fs.existsSync(`${curUserDir}\\${commandLine[2]}`)) {
                     console.log('Error: initial file not exist or target file already exits')
                 }
                 else {
-                    compressFile(`${curUserDir}\\${commandLine[1]}`), fs.isFileExist(`${curUserDir}\\${commandLine[2]}`)
+                    compressFile(`${curUserDir}\\${commandLine[1]}`, `${curUserDir}\\${commandLine[2]}`)
                 }
             }
+            console.log(`You are currently in ${curUserDir}`)
             break;
         case 'decompress':
             if (!commandLine[1] || !commandLine[2]) {
                 console.log('Error: command pattern is compress path_to_file path_to_destination')
             }
             else {
-                if (!fs.isFileExist(`${curUserDir}\\${commandLine[1]}`) || fs.isFileExist(`${curUserDir}\\${commandLine[2]}`)) {
+                if (!fs.existsSync(`${curUserDir}\\${commandLine[1]}`) || fs.existsSync(`${curUserDir}\\${commandLine[2]}`)) {
                     console.log('Error: initial file not exist or target file already exits')
                 }
-                else {
-                    decompressFile(`${curUserDir}\\${commandLine[1]}`), fs.isFileExist(`${curUserDir}\\${commandLine[2]}`)
+                else {                   
+                    decompressFile(`${curUserDir}\\${commandLine[1]}`, `${curUserDir}\\${commandLine[2]}`)
                 }
             }
+            console.log(`You are currently in ${curUserDir}`)
             break;
         //DEFAULT        
         default:
