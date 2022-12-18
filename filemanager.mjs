@@ -1,8 +1,7 @@
 import process, { chdir } from 'process';
-console.log('cs')
 import os from 'os';
 import * as fs from 'fs';
-
+import * as crypto from 'crypto';
 import { displayWorkDir, readFile } from './utils.mjs';
 import { clear } from 'console';
 
@@ -156,11 +155,11 @@ process.stdin.on('data', data => {
             else {
                 let isFileExist = fs.existsSync(`${curUserDir}\\${commandLine[1]}`);
                 let isDirExist = true;
-                try {                   
-                    fs.lstatSync(`${curUserDir}\\${commandLine[2]}`).isDirectory();                    
+                try {
+                    fs.lstatSync(`${curUserDir}\\${commandLine[2]}`).isDirectory();
                 } catch (err) {
                     isDirExist = false;
-                }                    
+                }
                 if (!isFileExist || !isDirExist) {
                     console.log(`Error: file dont exist or target folder dont exist`);
                 }
@@ -172,18 +171,18 @@ process.stdin.on('data', data => {
                 }
             }
             break;
-        case 'mv' :
+        case 'mv':
             if (!commandLine[1] || !commandLine[2]) {
                 console.log('Error: command pattern is mv path_to_file path_to_new_directory')
             }
             else {
                 let isFileExist = fs.existsSync(`${curUserDir}\\${commandLine[1]}`);
                 let isDirExist = true;
-                try {                   
-                    fs.lstatSync(`${curUserDir}\\${commandLine[2]}`).isDirectory();                    
+                try {
+                    fs.lstatSync(`${curUserDir}\\${commandLine[2]}`).isDirectory();
                 } catch (err) {
                     isDirExist = false;
-                }                    
+                }
                 if (!isFileExist || !isDirExist) {
                     console.log(`Error: file dont exist or target folder dont exist`);
                 }
@@ -195,6 +194,20 @@ process.stdin.on('data', data => {
                     console.log(`File ${commandLine[1]} moved to folder ${commandLine[2]}`)
                 }
             }
+            break;
+        //HASH 
+        case 'hash':
+            if (!commandLine[1]) { console.log('Error: file should be named') }
+            else {
+                if (!fs.existsSync(`${curUserDir}\\${commandLine[1]}`)) { console.log('Error: file dont exist') }
+                else {
+                    let textData = fs.readFileSync(`${curUserDir}\\${commandLine[1]}`).toString();
+                    let hash = crypto.createHash('sha256');
+                    let data = hash.update(textData, 'utf-8');
+                    let gen_hash = data.digest('hex');
+                    console.log( gen_hash )
+                }
+            };
             break;
         //DEFAULT        
         default:
