@@ -1,16 +1,17 @@
 import * as fs from 'fs';
 import os from 'os';
 
-export const cd_util = (curUserDir, commandArg) => {
-    let newPath = `${curUserDir}\\${commandArg}`;
-    if (!fs.existsSync(newPath)) {
-        console.log('Target path dont exists')
-    }
-    else {
-        curUserDir = newPath;
-        console.log(`You are currently in ${curUserDir}`)
-    }
-    return curUserDir;
+export const cd_util = (curUserDir, commandArg) => {   
+    let newPath = `${curUserDir}\\${commandArg}`
+    if ( commandArg.indexOf(os.homedir()) != -1) {
+        newPath = commandArg ;
+    }    
+    fs.readdir(`${newPath}`, (err)=>{
+        if (err) { console.log('Error: path dont exists')} else {           
+            console.log(`You are currently in ${newPath}`)
+        }
+    })    
+    return newPath;
 }
 
 export const up_util = (curUserDir) => {
