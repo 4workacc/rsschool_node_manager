@@ -1,10 +1,11 @@
 import process, { chdir } from 'process';
 import os from 'os';
 import * as fs from 'fs';
-import * as crypto from 'crypto';
+
 import { compressFile, decompressFile, displayWorkDir, readFile } from './utils.mjs';
 import { cd_util, ls_util, up_util } from './fs_utils.mjs';
-import { add_file_util, cat_util, copy_util, delete_util, rename_util } from './file_utils.mjs';
+import { add_file_util, cat_util, copy_util, delete_util, move_util, rename_util } from './file_utils.mjs';
+import { hash_util } from './hash_utils.mjs';
 
 const userName = process.platform === 'win32' ? process.argv[3] : process.argv[2];
 let curUserDir = os.homedir();
@@ -87,7 +88,7 @@ process.stdin.on('data', data => {
                 console.log('Error: command pattern is cp path_to_file path_to_new_directory')
             }
             else {
-               copy_util(curUserDir, commandLine[1], commandLine[2]);
+                copy_util(curUserDir, commandLine[1], commandLine[2]);
             }
             console.log(`You are currently in ${curUserDir}`)
             break;
@@ -96,40 +97,14 @@ process.stdin.on('data', data => {
                 console.log('Error: command pattern is mv path_to_file path_to_new_directory')
             }
             else {
-                let isFileExist = fs.existsSync(`${curUserDir}\\${commandLine[1]}`);
-                let isDirExist = true;
-                try {
-                    fs.lstatSync(`${curUserDir}\\${commandLine[2]}`).isDirectory();
-                } catch (err) {
-                    isDirExist = false;
-                }
-                if (!isFileExist || !isDirExist) {
-                    console.log(`Error: file dont exist or target folder dont exist`);
-                }
-                else {
-                    let rSteam = fs.createReadStream(`${curUserDir}\\${commandLine[1]}`);
-                    let wStream = fs.createWriteStream(`${curUserDir}\\${commandLine[2]}\\${commandLine[1]}`);
-                    rSteam.pipe(wStream);
-                    fs.unlinkSync(`${curUserDir}\\${commandLine[1]}`);
-                    console.log(`File ${commandLine[1]} moved to folder ${commandLine[2]}`)
-                }
+                move_util(curUserDir, commandLine[1], commandLine[2]);
             }
             console.log(`You are currently in ${curUserDir}`)
             break;
         //HASH 
         case 'hash':
             if (!commandLine[1]) { console.log('Error: file should be named') }
-            else {
-                if (!fs.existsSync(`${curUserDir}\\${commandLine[1]}`)) { console.log('Error: file dont exist') }
-                else {
-                    let textData = fs.readFileSync(`${curUserDir}\\${commandLine[1]}`).toString();
-                    let hash = crypto.createHash('sha256');
-                    let data = hash.update(textData, 'utf-8');
-                    let gen_hash = data.digest('hex');
-                    console.log(gen_hash)
-                }
-            };
-            console.log(`You are currently in ${curUserDir}`)
+            else hash_util(curUserDir, commandLine[1])
             break;
         //COMPRESS SECTION
         case 'compress':

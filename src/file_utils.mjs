@@ -73,17 +73,36 @@ export const rename_util = (curUserDir, param, param1) => {
 
 export const copy_util = (curUserDir, path, newPath) => {
     fs.lstat(`${curUserDir}\\${newPath}`, (err, start) => {
-        if ( err ) { console.log('Error: target directory dont exist')} 
+        if ( err || !start.isDirectory()) { console.log('Error: target directory dont exist'); return 0} 
         else {
             fs.access(`${curUserDir}\\${path}`, fs.F_OK, (err1)=>{
-                if ( err1 ) { console.log('Error: file dont exist')} 
+                if ( err1 ) { console.log('Error: file dont exist'); return 0} 
                 else {
                     let rSteam = fs.createReadStream(`${curUserDir}\\${path}`);
                     let wStream = fs.createWriteStream(`${curUserDir}\\${newPath}\\${path}`);
                     rSteam.pipe(wStream);
                     console.log(`File ${path} copyed to folder ${newPath}`)
+                    return 1;
                 }
             })
         }
     } )   
+}
+
+export const move_util = (curUserDir, path, newPath) => {
+    fs.lstat(`${curUserDir}\\${newPath}`, (err, start) => {
+        if ( err || !start.isDirectory()) { console.log('Error: target directory dont exist');} 
+        else {
+            fs.access(`${curUserDir}\\${path}`, fs.F_OK, (err1)=>{
+                if ( err1 ) { console.log('Error: file dont exist');} 
+                else {
+                    let rSteam = fs.createReadStream(`${curUserDir}\\${path}`);
+                    let wStream = fs.createWriteStream(`${curUserDir}\\${newPath}\\${path}`);
+                    rSteam.pipe(wStream);
+                    console.log(`File ${path} moved to folder ${newPath}`)                    
+                }
+            })
+        }
+    } )  ;
+    fs.unlink(`${curUserDir}\\${path}`, (err)=>{})
 }
