@@ -3,6 +3,8 @@ import os from 'os';
 import * as fs from 'fs';
 import * as crypto from 'crypto';
 import { compressFile, decompressFile, displayWorkDir, readFile } from './utils.mjs';
+import { cd_util, ls_util, up_util } from './fs_utils.mjs';
+import { cat_util } from './file_utils.mjs';
 
 const userName = process.platform === 'win32' ? process.argv[3] : process.argv[2];
 let curUserDir = os.homedir();
@@ -46,60 +48,22 @@ process.stdin.on('data', data => {
 
         //FS Section  
         case 'cd':
-            if (!commandLine[1]) {
-                console.log('Invalid input (command need path)')
-            }
+            if (!commandLine[1]) { console.log('Invalid input (command need path)') }
             else {
-                let newPath = `${curUserDir}\\${commandLine[1]}`;
-                if (!fs.existsSync(newPath)) {
-                    console.log('Target path dont exists')
-                }
-                else {
-                    curUserDir = newPath;
-                    console.log(`You are currently in ${curUserDir}`)
-                }
-            };           
+                curUserDir = cd_util(curUserDir, commandLine[1])
+            }
             break;
         case 'up':
-            if (curUserDir === os.homedir()) {
-                console.log('Error: could not move higher');
-            }
-            else {
-                curUserDir = curUserDir.split('\\');
-                curUserDir.pop();
-                curUserDir = curUserDir.join('\\');
-                console.log(`You are currently in ${curUserDir}`)
-            }
+            curUserDir = up_util(curUserDir);
             break;
         case 'ls':
-            let dirs = fs.readdirSync(curUserDir);
-            let dispDirs = [];
-            dirs.map((obj) => {
-                let isDirectory = fs.lstatSync(`${curUserDir}/${obj}`).isDirectory();
-                dispDirs.push({
-                    "name": obj,
-                    "type": isDirectory ? 'directory' : 'file'
-                });
-            })
-            dispDirs.sort((a, b) => (a.type > b.type) ? 1 : -1)
-            console.table(
-                dispDirs.map(obj => {
-                    return {
-                        'name': obj.name,
-                        'type': obj.type
-                    }
-                })
-            );
-            console.log(`You are currently in ${curUserDir}`)
+            ls_util(curUserDir);
             break;
         //FILES section
         case 'cat':
             if (!commandLine[1]) { console.log('Error: file should be named') }
             else {
-                if (!fs.existsSync(`${curUserDir}/${commandLine[1]}`)) { console.log('Error: file dont exist') }
-                else {
-                    readFile(`${curUserDir}/${commandLine[1]}`)
-                }
+              cat_util(`${curUserDir}\\${commandLine[1]}`);
             };
             console.log(`You are currently in ${curUserDir}`)
             break;
@@ -240,7 +204,7 @@ process.stdin.on('data', data => {
                 if (!fs.existsSync(`${curUserDir}\\${commandLine[1]}`) || fs.existsSync(`${curUserDir}\\${commandLine[2]}`)) {
                     console.log('Error: initial file not exist or target file already exits')
                 }
-                else {                   
+                else {
                     decompressFile(`${curUserDir}\\${commandLine[1]}`, `${curUserDir}\\${commandLine[2]}`)
                 }
             }
