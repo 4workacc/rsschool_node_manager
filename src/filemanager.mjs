@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as crypto from 'crypto';
 import { compressFile, decompressFile, displayWorkDir, readFile } from './utils.mjs';
 import { cd_util, ls_util, up_util } from './fs_utils.mjs';
-import { cat_util } from './file_utils.mjs';
+import { add_file_util, cat_util } from './file_utils.mjs';
 
 const userName = process.platform === 'win32' ? process.argv[3] : process.argv[2];
 let curUserDir = os.homedir();
@@ -70,17 +70,8 @@ process.stdin.on('data', data => {
         case 'add':
             if (!commandLine[1]) { console.log('Error: file should be named') }
             else {
-                if (fs.existsSync(`${curUserDir}/${commandLine[1]}`)) {
-                    console.log('Error: file already exist')
-                }
-                else {
-                    fs.createWriteStream(`${curUserDir}/${commandLine[1]}`, (err) => {
-                        if (err) throw new Error('Creation file error')
-                        console.log(`File ${commandLine[1]} created`)
-                    })
-                }
-            }
-            console.log(`You are currently in ${curUserDir}`)
+                add_file_util(`${curUserDir}/${commandLine[1]}`, curUserDir);
+            }           
             break;
         case 'rm':
             if (!commandLine[1]) { console.log('Error: file should be named') }

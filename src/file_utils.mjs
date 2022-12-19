@@ -15,3 +15,18 @@ export const cat_util = (path) => {
         }
     })
 }
+
+export const add_file_util = (path, curUserDir) => {
+    fs.access(path, fs.F_OK, (err) => {
+        if (err) {
+            fs.writeFile(path,'', ()=>{});
+            console.log('File succesfully created');
+            console.log(`You are currently in ${curUserDir}`)
+        }
+        else {
+            console.log('Error: file already exist');
+            console.log(`You are currently in ${curUserDir}`)
+        }
+    });
+    
+}
