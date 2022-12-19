@@ -28,6 +28,7 @@ export const add_file_util = (path, curUserDir) => {
             console.log(`You are currently in ${curUserDir}`)
         }
     });
+    console.log(`You are currently in ${curUserDir}`)
 }
 
 export const delete_util = (curUserDir, param) => {
@@ -87,6 +88,7 @@ export const copy_util = (curUserDir, path, newPath) => {
             })
         }
     } )   
+    console.log(`You are currently in ${curUserDir}`)
 }
 
 export const move_util = (curUserDir, path, newPath) => {
@@ -105,4 +107,5 @@ export const move_util = (curUserDir, path, newPath) => {
         }
     } )  ;
     fs.unlink(`${curUserDir}\\${path}`, (err)=>{})
+    console.log(`You are currently in ${curUserDir}`)
 }
