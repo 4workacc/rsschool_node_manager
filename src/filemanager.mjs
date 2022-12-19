@@ -8,13 +8,12 @@ import { add_file_util, cat_util, copy_util, delete_util, move_util, rename_util
 import { hash_util } from './hash_utils.mjs';
 import { compressFile, decompressFile } from './compress_utils.mjs';
 import { eosArch, eosCPUS, eosEOL, eosHomedir, eosUsername } from './eos_utils.mjs';
+import { enterMessage, finalMessage } from './enter_util.mjs';
 
-const userName = process.platform === 'win32' ? process.argv[3] : process.argv[2];
 let curUserDir = os.homedir();
 process.chdir(curUserDir);
 
-console.log(`Welcome to the File Manager, ${userName}!`);
-displayWorkDir(curUserDir);
+enterMessage(curUserDir);
 
 process.stdin.on('data', data => {
     let commandLine = data.toString().trim().split(' ');
@@ -22,8 +21,7 @@ process.stdin.on('data', data => {
 
     switch (command) {
         case '.exit':
-            console.log(`Thank you for using File Manager, ${userName}, goodbye!`);
-            process.stdin.pause();
+            finalMessage();
             break;
         // OS Section
         case 'os':
@@ -52,9 +50,7 @@ process.stdin.on('data', data => {
         //FS Section  
         case 'cd':
             if (!commandLine[1]) { console.log('Invalid input (command need path)') }
-            else {
-                curUserDir = cd_util(curUserDir, commandLine[1])
-            }
+            else { curUserDir = cd_util(curUserDir, commandLine[1]) }
             break;
         case 'up':
             curUserDir = up_util(curUserDir);
@@ -112,7 +108,7 @@ process.stdin.on('data', data => {
         case 'compress':
             if (!commandLine[1] || !commandLine[2]) {
                 console.log('Error: command pattern is compress path_to_file path_to_destination')
-            }else compressFile(curUserDir, commandLine[1], commandLine[2]);       
+            } else compressFile(curUserDir, commandLine[1], commandLine[2]);
             break;
         case 'decompress':
             if (!commandLine[1] || !commandLine[2]) {
