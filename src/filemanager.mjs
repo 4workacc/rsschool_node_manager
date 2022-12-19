@@ -2,10 +2,11 @@ import process, { chdir } from 'process';
 import os from 'os';
 import * as fs from 'fs';
 
-import { compressFile, decompressFile, displayWorkDir, readFile } from './utils.mjs';
+import { displayWorkDir } from './utils.mjs';
 import { cd_util, ls_util, up_util } from './fs_utils.mjs';
 import { add_file_util, cat_util, copy_util, delete_util, move_util, rename_util } from './file_utils.mjs';
 import { hash_util } from './hash_utils.mjs';
+import { compressFile, decompressFile } from './compress_utils.mjs';
 
 const userName = process.platform === 'win32' ? process.argv[3] : process.argv[2];
 let curUserDir = os.homedir();
@@ -110,30 +111,12 @@ process.stdin.on('data', data => {
         case 'compress':
             if (!commandLine[1] || !commandLine[2]) {
                 console.log('Error: command pattern is compress path_to_file path_to_destination')
-            }
-            else {
-                if (!fs.existsSync(`${curUserDir}\\${commandLine[1]}`) || fs.existsSync(`${curUserDir}\\${commandLine[2]}`)) {
-                    console.log('Error: initial file not exist or target file already exits')
-                }
-                else {
-                    compressFile(`${curUserDir}\\${commandLine[1]}`, `${curUserDir}\\${commandLine[2]}`)
-                }
-            }
-            console.log(`You are currently in ${curUserDir}`)
+            }else compressFile(curUserDir, commandLine[1], commandLine[2]);       
             break;
         case 'decompress':
             if (!commandLine[1] || !commandLine[2]) {
                 console.log('Error: command pattern is compress path_to_file path_to_destination')
-            }
-            else {
-                if (!fs.existsSync(`${curUserDir}\\${commandLine[1]}`) || fs.existsSync(`${curUserDir}\\${commandLine[2]}`)) {
-                    console.log('Error: initial file not exist or target file already exits')
-                }
-                else {
-                    decompressFile(`${curUserDir}\\${commandLine[1]}`, `${curUserDir}\\${commandLine[2]}`)
-                }
-            }
-            console.log(`You are currently in ${curUserDir}`)
+            } else decompressFile(curUserDir, commandLine[1], commandLine[2])
             break;
         //DEFAULT        
         default:
