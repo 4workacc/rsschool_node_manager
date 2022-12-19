@@ -7,6 +7,7 @@ import { cd_util, ls_util, up_util } from './fs_utils.mjs';
 import { add_file_util, cat_util, copy_util, delete_util, move_util, rename_util } from './file_utils.mjs';
 import { hash_util } from './hash_utils.mjs';
 import { compressFile, decompressFile } from './compress_utils.mjs';
+import { eosArch, eosCPUS, eosEOL, eosHomedir, eosUsername } from './eos_utils.mjs';
 
 const userName = process.platform === 'win32' ? process.argv[3] : process.argv[2];
 let curUserDir = os.homedir();
@@ -28,19 +29,19 @@ process.stdin.on('data', data => {
         case 'os':
             switch (commandLine[1]) {
                 case '--homedir':
-                    console.log(os.homedir());
+                    eosHomedir()
                     break;
                 case '--username':
-                    console.log(os.userInfo().username);
+                    eosUsername();
                     break;
                 case '--cpus':
-                    console.log(os.cpus());
+                    eosCPUS();
                     break;
                 case '--architecture':
-                    console.log(os.arch());
+                    eosArch()
                     break;
                 case '--EOL':
-                    console.log(os.EOL);
+                    eosEOL();
                     break;
                 default:
                     console.log('Invalid input');
