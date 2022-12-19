@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as crypto from 'crypto';
 import { compressFile, decompressFile, displayWorkDir, readFile } from './utils.mjs';
 import { cd_util, ls_util, up_util } from './fs_utils.mjs';
-import { add_file_util, cat_util } from './file_utils.mjs';
+import { add_file_util, cat_util, delete_util } from './file_utils.mjs';
 
 const userName = process.platform === 'win32' ? process.argv[3] : process.argv[2];
 let curUserDir = os.homedir();
@@ -63,7 +63,7 @@ process.stdin.on('data', data => {
         case 'cat':
             if (!commandLine[1]) { console.log('Error: file should be named') }
             else {
-              cat_util(`${curUserDir}\\${commandLine[1]}`);
+                cat_util(`${curUserDir}\\${commandLine[1]}`);
             };
             console.log(`You are currently in ${curUserDir}`)
             break;
@@ -71,22 +71,10 @@ process.stdin.on('data', data => {
             if (!commandLine[1]) { console.log('Error: file should be named') }
             else {
                 add_file_util(`${curUserDir}/${commandLine[1]}`, curUserDir);
-            }           
+            }
             break;
         case 'rm':
-            if (!commandLine[1]) { console.log('Error: file should be named') }
-            else {
-                if (!fs.existsSync(`${curUserDir}/${commandLine[1]}`)) {
-                    console.log('Error: file dont exist')
-                }
-                else {
-                    fs.unlink(`${curUserDir}/${commandLine[1]}`, (err) => {
-                        if (err) throw new Error('Delete file error')
-                        console.log(`File ${commandLine[1]} deleted successfully`)
-                    })
-                }
-            }
-            console.log(`You are currently in ${curUserDir}`)
+            delete_util(curUserDir, commandLine[1])
             break;
         case 'rn':
             if (!commandLine[1] || !commandLine[2]) {
