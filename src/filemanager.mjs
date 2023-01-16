@@ -1,5 +1,5 @@
 import process, { chdir } from 'process';
-import os from 'os';
+
 
 import { cd_util, ls_util, up_util } from './fs_utils.mjs';
 import { add_file_util, cat_util, copy_util, delete_util, move_util, rename_util } from './file_utils.mjs';
@@ -12,6 +12,8 @@ let curUserDir = os.homedir();
 process.chdir(curUserDir);
 
 enterMessage(curUserDir);
+
+console.log(os.cpus)
 
 process.stdin.on('data', data => {
     let commandLine = data.toString().trim().split(' ');
